@@ -1,13 +1,12 @@
-const buttonOpen = document.querySelectorAll(".wrapper");
-let sizeField, firstPlayer;
-
-buttonOpen.forEach((el, index) =>{
-    el.addEventListener("click", (e) =>{
+document.querySelectorAll(".wrapper").forEach((element, index) =>{
+    element.addEventListener("click", e => {
         let titleMenu = document.querySelectorAll(".title-menu");
         document.querySelectorAll(".drop-down-list")[index].classList.toggle("open");
         titleMenu[index].textContent = e.target.textContent;
-        sizeField = titleMenu[0].textContent;
-        firstPlayer = titleMenu[1].textContent;
-    })
-})
-
+        let field = {
+            Size: titleMenu[0].textContent,
+            FirstGamer: titleMenu[1].textContent
+        };
+        localStorage.setItem("field", JSON.stringify("field"));
+    });
+});
