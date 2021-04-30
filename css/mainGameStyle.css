@@ -31,3 +31,41 @@ header {
   cursor: pointer;
   font-size: 30px;
 }
+
+.wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-right: -50%;
+  margin-bottom: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.gameField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.circle {
+  width: 100%;
+  height: 100%;
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: draw 1s forwards;
+}
+
+.gameField p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: 1px solid black;
+}
+
+@keyframes draw {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

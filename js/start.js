@@ -7,6 +7,6 @@ document.querySelectorAll(".wrapper").forEach((element, index) =>{
             Size: titleMenu[0].textContent,
             FirstGamer: titleMenu[1].textContent
         };
-        localStorage.setItem("field", JSON.stringify("field"));
+        localStorage.setItem("field", JSON.stringify(field));
     });
 });
