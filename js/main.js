@@ -10,6 +10,7 @@ const cross = `<svg class="cross">
 let endGame = false;
 let current = "X";
 let arrField = [];
+let numberMoves = 0;
 
 function createCell(){
     let gameField = document.querySelector(".gameField");
@@ -25,6 +26,7 @@ function createCell(){
 }
 
 function checkEndGAme(row, col, symbol){
+    ++numberMoves;
     for(let i = 0, horizontal = 0, vertical = 0; i < Number(field.Size); ++i){
         horizontal = arrField[row][i].innerHTML == symbol ?  ++horizontal : 0;
         vertical = arrField[i][col].innerHTML == symbol ? ++vertical : 0;
@@ -32,19 +34,24 @@ function checkEndGAme(row, col, symbol){
             endGame = true; 
             let winPlayer = symbol == cross ? "X" : "O";
             document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
+            current = "X";
             return;
         }
+    }
+
+
+    if(numberMoves == (Number(arrField.length) * Number(arrField.length))){
+        document.querySelector(".winPlayer").textContent = "Ничья";
+        endGame = true;
     }
 }
 
 
 function determinationCourse(){
-    if(!endGame){
-        if(current == field.FirstGamer){
-            playerMove();   
-        }else{
-            moveBot();
-        }
+    if(current == field.FirstGamer){
+        playerMove();   
+    }else{
+        moveBot();
     }
 }
 
@@ -63,24 +70,32 @@ function moveBot(){
 }
 
 
-
 createCell();
 setInterval(determinationCourse, 50);
 
+
 function playerMove(){
-    if(!endGame){
-        arrField
-    }
-    for(let i = 0; i < Number(field.Size) && !endGame; ++i){
+    for(let i = 0; i < Number(field.Size); ++i){
         for(let j = 0; j < Number(field.Size); ++j){
             arrField[i][j].addEventListener("click", e =>{
-                if(e.target.innerHTML == "" && e.target.tagName == "TD"){
+                if(e.target.innerHTML == "" && e.target.tagName == "TD" && !endGame){
                     let gameSymbol = field.FirstGamer == "X" ? cross : circle;
                     e.target.innerHTML += gameSymbol;
-                    checkEndGAme(i, j, gameSymbol);
                     current = field.FirstGamer == "O" ? "X" : "O";
+                    checkEndGAme(i, j, gameSymbol);
                 }
             })
         }
     }
 }
+
+document.querySelector(".restartGame").addEventListener("click", e => {
+    document.querySelector(".winPlayer").textContent = "";
+    endGame = false;
+    numberMoves = 0;
+    for(let i = 0; i < Number(field.Size); ++i){
+        for(let j = 0; j < Number(field.Size); ++j){
+            arrField[i][j].innerHTML = "";
+        }
+    }
+});
