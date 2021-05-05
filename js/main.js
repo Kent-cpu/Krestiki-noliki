@@ -25,23 +25,48 @@ function createCell(){
     }
 }
 
+
+
 function checkEndGAme(row, col, symbol){
     ++numberMoves;
+    const winPlayer = symbol == cross ? "X" : "O";
+    let min = Math.min(row , col);
     for(let i = 0, horizontal = 0, vertical = 0; i < Number(field.Size); ++i){
         horizontal = arrField[row][i].innerHTML == symbol ?  ++horizontal : 0;
         vertical = arrField[i][col].innerHTML == symbol ? ++vertical : 0;
         if (horizontal == 3 || vertical == 3){
             endGame = true; 
-            let winPlayer = symbol == cross ? "X" : "O";
             document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
             current = "X";
             return;
         }
     }
 
+    
+    for(let r = row - min, c = col - min, win = 0; r < Number(field.Size)  && c < Number(field.Size); r++, c++ ){
+        win = arrField[r][c].innerHTML == symbol ? ++win : 0;
+        if(win == 3){
+            endGame = true;
+            document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
+            current = "X";
+            return;
+        }
+    }
+
+    min = Math.min(row, Number(field.Size) - 1 - col);
+    for(let r = row - min, c = col + min , win = 0; r < Number(field.Size)  && c >= 0 &&  c < Number(field.Size) ; r++, c-- ){
+        win = arrField[r][c].innerHTML == symbol ? ++win : 0;
+        if(win == 3){
+            endGame = true;
+            document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
+            current = "X";
+            return;
+        }
+    }
 
     if(numberMoves == (Number(arrField.length) * Number(arrField.length))){
         document.querySelector(".winPlayer").textContent = "Ничья";
+        current = "X";
         endGame = true;
     }
 }
