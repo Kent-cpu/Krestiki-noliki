@@ -10,9 +10,9 @@ const cross = `<svg class="cross">
 let endGame = false;
 let current = "X";
 let arrField = [];
-let numberMoves = 0;
+let numberMoves = 0, countCrossWin = 0 , countCircleWin = 0;
 
-function createCell(){
+function createCell(){ // Создание игрового поля
     let gameField = document.querySelector(".gameField");
     for(let line = 0; line < Number(field.Size); ++line){
         let tr = gameField.insertRow();
@@ -25,54 +25,96 @@ function createCell(){
     }
 }
 
+function stopGame(winPlayer, list){ // Остановление игры после победы
+    for(let i = 0; i < list.length; ++i){
+        arrField[list[i].R][list[i].C].style.background = "lime";
+    }
+    if(winPlayer == "X"){
+        ++countCrossWin;
+    }else if (winPlayer == "O"){
+        ++countCircleWin;
+    }
+    endGame = true; 
+    document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
+    document.querySelector(".game-account").textContent = "Крестик: " + countCrossWin + " - " + countCircleWin + " :Нолик";
+    current = "X";
+    numberMoves = 0;
+}
 
-
-function checkEndGAme(row, col, symbol){
+function checkEndGAme(row, col, symbol){ // Проверка победителя 
     ++numberMoves;
     const winPlayer = symbol == cross ? "X" : "O";
-    let min = Math.min(row , col);
-    for(let i = 0, horizontal = 0, vertical = 0; i < Number(field.Size); ++i){
-        horizontal = arrField[row][i].innerHTML == symbol ?  ++horizontal : 0;
-        vertical = arrField[i][col].innerHTML == symbol ? ++vertical : 0;
-        if (horizontal == 3 || vertical == 3){
-            endGame = true; 
-            document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
-            current = "X";
-            return;
+    let min = Math.min(row , col), listKoordinate = [];
+    for(let i = 0, win = 0; i < Number(field.Size); ++i){
+        if(arrField[row][i].innerHTML == symbol){
+            ++win;
+            listKoordinate.push({R: row, C: i});
+            if(win == 3){
+                stopGame(winPlayer, listKoordinate);
+                return;
+            }
+        }else{
+            win = 0;
+            listKoordinate.splice(0, listKoordinate.length); 
         }
     }
 
+    listKoordinate.splice(0, listKoordinate.length);
     
-    for(let r = row - min, c = col - min, win = 0; r < Number(field.Size)  && c < Number(field.Size); r++, c++ ){
-        win = arrField[r][c].innerHTML == symbol ? ++win : 0;
-        if(win == 3){
-            endGame = true;
-            document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
-            current = "X";
-            return;
+    for(let i = 0, win = 0; i < Number(field.Size); ++i){
+        if(arrField[i][col].innerHTML == symbol){
+            ++win;
+            listKoordinate.push({R: i, C: col});
+            if(win == 3){
+                stopGame(winPlayer, listKoordinate);
+                return;
+            }
+        }else{
+            win = 0;
+            listKoordinate.splice(0, listKoordinate.length);
         }
     }
 
+    listKoordinate.splice(0, listKoordinate.length);
+    for(let r = row - min, c = col - min, win = 0; r < Number(field.Size)  && c < Number(field.Size); ++r, ++c ){ // Проверка диагонали на 45 градусов
+        if(arrField[r][c].innerHTML == symbol){
+            ++win;
+            listKoordinate.push({R: r, C: c});
+            if(win == 3){
+                stopGame(winPlayer, listKoordinate);
+                return;
+            }
+        }else{
+            win = 0;
+            listKoordinate.splice(0 , listKoordinate.length);
+        }
+    }
+
+    listKoordinate.splice(0, listKoordinate.length);
     min = Math.min(row, Number(field.Size) - 1 - col);
-    for(let r = row - min, c = col + min , win = 0; r < Number(field.Size)  && c >= 0 &&  c < Number(field.Size) ; r++, c-- ){
-        win = arrField[r][c].innerHTML == symbol ? ++win : 0;
-        if(win == 3){
-            endGame = true;
-            document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
-            current = "X";
-            return;
+    for(let r = row - min, c = col + min , win = 0; r < Number(field.Size)  && c >= 0 &&  c < Number(field.Size) ; ++r, --c ){ // Проверка диагонали на 135 градусов
+        if(arrField[r][c].innerHTML == symbol){
+            ++win;
+            listKoordinate.push({R: r, C: c});
+            if(win == 3){
+                stopGame(winPlayer, listKoordinate);
+                return;
+            }
+        }else{
+            win = 0;
+            listKoordinate.splice(0 , listKoordinate.length);
         }
     }
 
-    if(numberMoves == (Number(arrField.length) * Number(arrField.length))){
+    if(numberMoves == (Number(arrField.length) * Number(arrField.length))){ // Проверка на ничью
+        endGame = true; 
         document.querySelector(".winPlayer").textContent = "Ничья";
         current = "X";
-        endGame = true;
+        numberMoves = 0;
     }
 }
 
-
-function determinationCourse(){
+function determinationCourse(){ 
     if(current == field.FirstGamer){
         playerMove();   
     }else{
@@ -102,7 +144,7 @@ setInterval(determinationCourse, 50);
 function playerMove(){
     for(let i = 0; i < Number(field.Size); ++i){
         for(let j = 0; j < Number(field.Size); ++j){
-            arrField[i][j].addEventListener("click", e =>{
+            arrField[i][j].addEventListener("click", e => {
                 if(e.target.innerHTML == "" && e.target.tagName == "TD" && !endGame){
                     let gameSymbol = field.FirstGamer == "X" ? cross : circle;
                     e.target.innerHTML += gameSymbol;
@@ -114,13 +156,14 @@ function playerMove(){
     }
 }
 
-document.querySelector(".restartGame").addEventListener("click", e => {
+document.querySelector(".restartGame").addEventListener("click", () => { // Перезапуск игрового процесса
     document.querySelector(".winPlayer").textContent = "";
     endGame = false;
     numberMoves = 0;
     for(let i = 0; i < Number(field.Size); ++i){
         for(let j = 0; j < Number(field.Size); ++j){
             arrField[i][j].innerHTML = "";
+            arrField[i][j].style.background = "white";
         }
     }
 });
