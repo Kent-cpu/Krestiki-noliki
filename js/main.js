@@ -133,9 +133,15 @@ function playerMove(){
         for(let j = 0; j < Number(field.Size); ++j){
             arrField[i][j].addEventListener("click", e => {
                 if(e.target.innerHTML == "" && e.target.tagName == "TD" && !endGame){
-                    let gameSymbol = field.FirstGamer == "X" ? cross : circle;
+                    let gameSymbol = "";
+                    if(field.Mode == "Бот"){
+                        gameSymbol = field.FirstGamer == "X" ? cross : circle;
+                        current = field.FirstGamer == "O" ? "X" : "O";
+                    }else{
+                        gameSymbol = current == "X" ? cross : circle;
+                        current = current == "X" ? "O": "X";
+                    }
                     e.target.innerHTML += gameSymbol;
-                    current = field.FirstGamer == "O" ? "X" : "O";
                     checkEndGAme(i, j, gameSymbol);
                 }
             })
@@ -144,17 +150,19 @@ function playerMove(){
 }
 
 function determinationCourse(){ 
-    if(current == field.FirstGamer){
-        playerMove();   
+    if(field.Mode == "Бот"){
+        if(current == field.FirstGamer){
+            playerMove(field.FirstGamer);   
+        }else{
+            moveBot();
+        }
     }else{
-        moveBot();
+        playerMove();
     }
 }
 
-
 createCell();
 setInterval(determinationCourse, 50);
-
 
 document.querySelector(".restart-game").addEventListener("click", () => { // Перезапуск игрового процесса
     document.querySelector(".win-player").textContent = "";

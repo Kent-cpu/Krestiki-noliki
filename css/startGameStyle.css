@@ -30,7 +30,7 @@ body {
 }
 
 .menu {
-  width: 80px;
+  width: 90px;
   height: 25px;
   display: flex;
   justify-content: center;
@@ -55,10 +55,13 @@ body {
   background-color: rgb(12, 247, 32);
 }
 
+i {
+  font-size: 18px;
+}
+
 .fas.fa-angle-down {
   position: absolute;
-  right: 10px;
-  font-size: 18px;
+  right: 7px;
 }
 
 .wrapper {
@@ -79,7 +82,7 @@ body {
 }
 
 .drop-down-list p {
-  width: 80px;
+  width: 90px;
   text-align: center;
   border: 1px solid rgb(8, 176, 228);
   background-color: rgb(8, 202, 236);

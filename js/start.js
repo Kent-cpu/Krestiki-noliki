@@ -5,7 +5,8 @@ document.querySelectorAll(".wrapper").forEach((element, index) =>{
         titleMenu[index].textContent = e.target.textContent;
         let field = {
             Size: titleMenu[0].textContent,
-            FirstGamer: titleMenu[1].textContent
+            FirstGamer: titleMenu[1].textContent,
+            Mode: titleMenu[2].textContent
         };
         localStorage.setItem("field", JSON.stringify(field));
     });
