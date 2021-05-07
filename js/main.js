@@ -4,16 +4,16 @@ const circle = `<svg class="circle">
                     <circle r="20" cx="30" cy="30" stroke="blue" stroke-width="7" fill="none" stroke-linecap="round"></circle>
                 </svg>`;
 const cross = `<svg class="cross">
-<line class="first" x1="10" y1="10" x2="50" y2="50" stroke="red" stroke-width="7" stroke-linecap="round"></line>
-<line class="second" x1="50" y1="10" x2="10" y2="50" stroke="red" stroke-width="7" stroke-linecap="round"></line>
-</svg>`;
+                    <line class="first" x1="10" y1="10" x2="50" y2="50" stroke="red" stroke-width="7" stroke-linecap="round"></line>
+                    <line class="second" x1="50" y1="10" x2="10" y2="50" stroke="red" stroke-width="7" stroke-linecap="round"></line>
+                </svg>`;
 let endGame = false;
 let current = "X";
 let arrField = [];
 let numberMoves = 0, countCrossWin = 0 , countCircleWin = 0;
 
 function createCell(){ // Создание игрового поля
-    let gameField = document.querySelector(".gameField");
+    let gameField = document.querySelector(".game-field");
     for(let line = 0; line < Number(field.Size); ++line){
         let tr = gameField.insertRow();
         let buf = [];
@@ -35,7 +35,7 @@ function stopGame(winPlayer, list){ // Остановление игры пос�
         ++countCircleWin;
     }
     endGame = true; 
-    document.querySelector(".winPlayer").textContent = "Выиграл: " + winPlayer;
+    document.querySelector(".win-player").textContent = "Выиграл: " + winPlayer;
     document.querySelector(".game-account").textContent = "Крестик: " + countCrossWin + " - " + countCircleWin + " :Нолик";
     current = "X";
     numberMoves = 0;
@@ -45,7 +45,7 @@ function checkEndGAme(row, col, symbol){ // Проверка победител�
     ++numberMoves;
     const winPlayer = symbol == cross ? "X" : "O";
     let min = Math.min(row , col), listKoordinate = [];
-    for(let i = 0, win = 0; i < Number(field.Size); ++i){
+    for(let i = 0, win = 0; i < Number(field.Size); ++i){ // проверка горизонтали
         if(arrField[row][i].innerHTML == symbol){
             ++win;
             listKoordinate.push({R: row, C: i});
@@ -61,7 +61,7 @@ function checkEndGAme(row, col, symbol){ // Проверка победител�
 
     listKoordinate.splice(0, listKoordinate.length);
     
-    for(let i = 0, win = 0; i < Number(field.Size); ++i){
+    for(let i = 0, win = 0; i < Number(field.Size); ++i){ // проверка вертикали
         if(arrField[i][col].innerHTML == symbol){
             ++win;
             listKoordinate.push({R: i, C: col});
@@ -108,17 +108,9 @@ function checkEndGAme(row, col, symbol){ // Проверка победител�
 
     if(numberMoves == (Number(arrField.length) * Number(arrField.length))){ // Проверка на ничью
         endGame = true; 
-        document.querySelector(".winPlayer").textContent = "Ничья";
+        document.querySelector(".win-player").textContent = "Ничья";
         current = "X";
         numberMoves = 0;
-    }
-}
-
-function determinationCourse(){ 
-    if(current == field.FirstGamer){
-        playerMove();   
-    }else{
-        moveBot();
     }
 }
 
@@ -136,11 +128,6 @@ function moveBot(){
     }
 }
 
-
-createCell();
-setInterval(determinationCourse, 50);
-
-
 function playerMove(){
     for(let i = 0; i < Number(field.Size); ++i){
         for(let j = 0; j < Number(field.Size); ++j){
@@ -156,10 +143,24 @@ function playerMove(){
     }
 }
 
-document.querySelector(".restartGame").addEventListener("click", () => { // Перезапуск игрового процесса
-    document.querySelector(".winPlayer").textContent = "";
+function determinationCourse(){ 
+    if(current == field.FirstGamer){
+        playerMove();   
+    }else{
+        moveBot();
+    }
+}
+
+
+createCell();
+setInterval(determinationCourse, 50);
+
+
+document.querySelector(".restart-game").addEventListener("click", () => { // Перезапуск игрового процесса
+    document.querySelector(".win-player").textContent = "";
     endGame = false;
     numberMoves = 0;
+    current = "X";
     for(let i = 0; i < Number(field.Size); ++i){
         for(let j = 0; j < Number(field.Size); ++j){
             arrField[i][j].innerHTML = "";
